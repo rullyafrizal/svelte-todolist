@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition'
-
 	interface List {
 		task: String,
 		is_finished: boolean
@@ -9,71 +7,74 @@
 	let lists: Array<List> = [
 		{
 			task: 'Cleaning Toilets',
-			is_finished: true
+			is_finished: true,
 		},
 		{
 			task: 'Learning Svelte',
-			is_finished: false
-		}
-	]
+			is_finished: false,
+		},
+	];
 
-	let task: string = ''
+	let task: string = '';
 
 	const add = (): void => {
 		if (task) {
-			lists = [...lists, { task, is_finished: false }]
+			lists = [...lists, {
+				task,
+				is_finished: false,
+			}];
 
-			task = ''
+			task = '';
 		} else {
-			alert('Tolong diisi dahulu sebelum menyimpan!')
+			window.alert('Tolong diisi dahulu sebelum menyimpan!');
 		}
-	}
+	};
 
 	const finish = (index): void => {
 		lists[index].is_finished = !lists[index].is_finished;
-	}
+	};
 
 	const destroy = (index): void => {
-		if (confirm('Are you sure?')) {
-			lists.splice(index, 1)
-
-			lists = lists
+		if (!window.confirm('Are you sure?')) {
+			return;
 		}
-	}
+		lists.splice(index, 1);
+		lists = lists;
+	};
 
-	let editMode = false
-	let selectedIndex = null
+	let editMode = false;
+	let selectedIndex = null;
 	const edit = (index): void => {
-		task = lists[index].task
-		editMode = true
-		selectedIndex = index
-	}
+		task = lists[index].task;
+		editMode = true;
+		selectedIndex = index;
+	};
 
 	const update = (): void => {
-		if (task) {
-			lists[selectedIndex].task = task
-			editMode = false
-			task = ''
+		if (!task) {
+			window.alert('Harap isi terlebih dahulu!');
+			task = lists[selectedIndex].task;
 		} else {
-			alert('Harap isi terlebih dahulu!')
-			task = lists[selectedIndex].task
+			lists[selectedIndex].task = task;
+			editMode = false;
+			task = '';
 		}
-	}
+	};
 
 	const reset = (): void => {
-		task = ''
-		editMode = false
-		selectedIndex = null
-	}
+		task = '';
+		editMode = false;
+		selectedIndex = null;
+	};
 
 	// computed property kalau di vue
-	$: title = 'TO DO LIST'
+	$: title = 'TO DO LIST';
 </script>
 
 <svelte:head>
 	<title>To Do List</title>
 	<meta name="robots" content="noindex nofollow" />
-	<html lang="en" />
+	<html lang="en"></html>
 </svelte:head>
 
 <main>
@@ -81,7 +82,7 @@
 		<div class="basis-1/2">
 			<div class="w-full py-4 px-8 bg-white shadow-lg hover:shadow-2xl rounded-lg my-10">
 				<div>
-					<h2 class="text-gray-800 text-xl leading-loose font-bold">{title}</h2>
+					<div class="text-gray-800 text-xl leading-loose font-bold">{ title }</div>
 					<div class="focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded-lg p-1">
 						<input placeholder="Enter task..." id="name" bind:value={task} autocomplete="false" tabindex="0" type="text" class="py-3 px-3 text-gray-900 focus:ring focus:border-blue-500 outline-none rounded-md block h-full w-full">
 					</div>
@@ -110,7 +111,10 @@
 									<div class="select-none flex flex-1 items-center transition duration-500 ease-in-out transform hover:-translate-y-2 rounded-2xl border-2 p-4 hover:shadow-2xl border-blue-400">
 										<div class="flex-1 pl-1">
 											<div class="font-medium leading-normal hover:cursor-pointer inline-block" on:click={() => finish(index)}>
-												<input type="checkbox" class="active:outline-none mr-2 outline-none rounded" checked={list.is_finished}>
+												<input type="checkbox"
+													   class="active:outline-none mr-2 outline-none rounded"
+													   bind:checked={list.is_finished}
+												>
 												{#key list.is_finished}
 													{#if list.is_finished}
 														<s>{list.task}</s>
@@ -149,6 +153,6 @@
 	@tailwind utilities;
 
 	* {
-		font-family: Inter;
+		font-family: Inter, serif;
 	}
 </style>
