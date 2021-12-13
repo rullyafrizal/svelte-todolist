@@ -1,74 +1,83 @@
 <script lang="ts">
+	import TaskList from './Components/TaskList.svelte'
+
+	let title
+
 	interface List {
-		task: String,
-		is_finished: boolean
+		task: string,
+		isFinished: boolean
 	}
 
 	let lists: Array<List> = [
-		{
-			task: 'Cleaning Toilets',
-			is_finished: true,
-		},
-		{
-			task: 'Learning Svelte',
-			is_finished: false,
-		},
-	];
+	  {
+	    task: 'Cleaning Toilets',
+	    isFinished: true
+	  },
+	  {
+	    task: 'Learning Svelte',
+	    isFinished: false
+	  }
+	]
 
-	let task: string = '';
+	let task: string = ''
 
 	const add = (): void => {
-		if (task) {
-			lists = [...lists, {
-				task,
-				is_finished: false,
-			}];
+	  if (task) {
+	    lists = [...lists, {
+	      task,
+	      isFinished: false
+	    }]
 
-			task = '';
-		} else {
-			window.alert('Tolong diisi dahulu sebelum menyimpan!');
-		}
-	};
+	    task = ''
+	  } else {
+	    window.alert('Tolong diisi dahulu sebelum menyimpan!')
+	  }
+	}
 
-	const finish = (index): void => {
-		lists[index].is_finished = !lists[index].is_finished;
-	};
+	const finish = (event): void => {
+	  const { index } = event.detail
+	  lists[index].isFinished = !lists[index].isFinished
+	}
 
-	const destroy = (index): void => {
-		if (!window.confirm('Are you sure?')) {
-			return;
-		}
-		lists.splice(index, 1);
-		lists = lists;
-	};
+	const destroy = (event): void => {
+	  const { index } = event.detail
 
-	let editMode = false;
-	let selectedIndex = null;
-	const edit = (index): void => {
-		task = lists[index].task;
-		editMode = true;
-		selectedIndex = index;
-	};
+	  if (!window.confirm('Are you sure?')) {
+	    return
+	  }
+	  lists.splice(index, 1)
+	  lists = lists
+	}
+
+	let editMode = false
+	let selectedIndex = null
+	const edit = (event): void => {
+	  const { index } = event.detail
+
+	  task = lists[index].task
+	  editMode = true
+	  selectedIndex = index
+	}
 
 	const update = (): void => {
-		if (!task) {
-			window.alert('Harap isi terlebih dahulu!');
-			task = lists[selectedIndex].task;
-		} else {
-			lists[selectedIndex].task = task;
-			editMode = false;
-			task = '';
-		}
-	};
+	  if (!task) {
+	    window.alert('Harap isi terlebih dahulu!')
+	    task = lists[selectedIndex].task
+	  } else {
+	    lists[selectedIndex].task = task
+	    editMode = false
+	    task = ''
+	  }
+	}
 
 	const reset = (): void => {
-		task = '';
-		editMode = false;
-		selectedIndex = null;
-	};
+	  task = ''
+	  editMode = false
+	  selectedIndex = null
+	}
 
 	// computed property kalau di vue
-	$: title = 'TO DO LIST';
+	$: title = 'TO DO LIST'
 </script>
 
 <svelte:head>
@@ -107,32 +116,12 @@
 					<ul class="flex flex-col p-2 basis-full">
 						{#each lists as list, index}
 							{#key lists.length}
-								<li class="border-gray-400 flex flex-row my-3">
-									<div class="select-none flex flex-1 items-center transition duration-500 ease-in-out transform hover:-translate-y-2 rounded-2xl border-2 p-4 hover:shadow-2xl border-blue-400">
-										<div class="flex-1 pl-1">
-											<div class="font-medium leading-normal hover:cursor-pointer inline-block" on:click={() => finish(index)}>
-												<input type="checkbox"
-													   class="active:outline-none mr-2 outline-none rounded"
-													   bind:checked={list.is_finished}
-												>
-												{#key list.is_finished}
-													{#if list.is_finished}
-														<s>{list.task}</s>
-													{:else}
-														{list.task}
-													{/if}
-												{/key}
-											</div>
-										</div>
-										<div class="w-1/4 text-center flex text-white text-bold rounded-md justify-center items-end p-2">
-											<button on:click={() => destroy(index)} class="rounded active:bg-red-600 m-1 focus:outline-none focus:ring focus:ring-red-300 px-3 py-2 border-b-4 border-l-2 focus:outline-none shadow-lg bg-red-700 border-red-800">
-												<svg class="h-4 w-4 text-white"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <polyline points="3 6 5 6 21 6" />  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />  <line x1="10" y1="11" x2="10" y2="17" />  <line x1="14" y1="11" x2="14" y2="17" /></svg>
-											</button>
-											<button on:click={() => edit(index)} class="rounded active:bg-yellow-600 m-1 focus:outline-none focus:ring focus:ring-yellow-300 px-3 py-2 border-b-4 border-l-2 focus:outline-none shadow-lg bg-yellow-500 border-yellow-600">
-												<svg class="h-4 w-4 text-white"  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M9 7 h-3a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-3" />  <path d="M9 15h3l8.5 -8.5a1.5 1.5 0 0 0 -3 -3l-8.5 8.5v3" />  <line x1="16" y1="5" x2="19" y2="8" /></svg>
-											</button>
-										</div>
-									</div>
+								<li class="flex flex-row my-3">
+									<TaskList list={list} index={index}
+														on:finish={finish}
+														on:destroy={destroy}
+														on:edit={edit}
+									/>
 								</li>
 							{/key}
 						{/each}

@@ -4,7 +4,7 @@
         "es2021": true
     },
     "extends": [
-        "airbnb-base"
+        "standard"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -12,29 +12,22 @@
         "sourceType": "module"
     },
     "plugins": [
-        "svelte3",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "svelte3"
     ],
+    "rules": {
+        "indent": ["error", 2],
+        "no-multiple-empty-lines": [2, {"max": 2}],
+        "no-tabs": 0
+    },
     "overrides": [
         {
             "files": ["*.svelte"],
             "processor": "svelte3/svelte3"
         }
     ],
-    "ignorePatterns": [
-        "public/build/"
-    ],
-    "rules": {
-        "indent": [2, "tab"],
-        "no-tabs": 0,
-        "no-alert": "off",
-        "semi": [2, "always"],
-        "no-console": "warn",
-        "quotes": ["error", "single"],
-        "space-in-brackets": ["error", "always"]
-    },
     "settings": {
-//        "svelte3/typescript": () => require('typescript') // pass the TypeScript package to the Svelte plugin
+//        "svelte3/typescript": () => require('typescript'), // pass the TypeScript package to the Svelte plugin
         // OR
         "svelte3/typescript": true // load TypeScript as peer dependency
         // ...
